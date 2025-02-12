@@ -40,6 +40,22 @@ class Tree
     delete(value, next_node)
   end
 
+  def level_order # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    result = []
+    known_nodes = [root]
+    until known_nodes.empty?
+      result << if block_given?
+                  yield(known_nodes[0].value)
+                else
+                  known_nodes[0].value
+                end
+      known_nodes << known_nodes[0].left_child unless known_nodes[0].left_child.nil?
+      known_nodes << known_nodes[0].right_child unless known_nodes[0].right_child.nil?
+      known_nodes.shift
+    end
+    result
+  end
+
   private
 
   def del_node(address, prev_node = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -75,16 +91,6 @@ class Tree
 end
 
 array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
-
 test = Tree.new(array)
-puts 'original tree >>>>>>>>>>>>>'
-puts ''
 test.print_bst
-puts 'insert 24 to the tree >>>>>>>>>>>'
-puts ''
-test.insert(24)
-test.print_bst
-puts 'delete 64 from the tree >>>>>>>>>>'
-puts ''
-test.delete(64)
-test.print_bst
+p test.level_order

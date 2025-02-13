@@ -56,6 +56,17 @@ class Tree
     result
   end
 
+  def rec_level_order(known_nodes = [root], accumulator = []) # rubocop:disable Metrics/AbcSize
+    return if known_nodes.empty?
+
+    known_nodes << known_nodes[0].left_child unless known_nodes[0].left_child.nil?
+    known_nodes << known_nodes[0].right_child unless known_nodes[0].right_child.nil?
+    accumulator << (block_given? ? yield(known_nodes[0].value) : known_nodes[0].value)
+    known_nodes.shift
+    rec_level_order(known_nodes, accumulator)
+    accumulator
+  end
+
   private
 
   def del_node(address, prev_node = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -94,3 +105,4 @@ array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
 test = Tree.new(array)
 test.print_bst
 p test.level_order
+p test.rec_level_order

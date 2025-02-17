@@ -67,6 +67,51 @@ class Tree
     accumulator
   end
 
+  def in_order
+    result = []
+
+    helper = lambda do |current_node|
+      return if current_node.nil?
+
+      helper.call(current_node.left_child)
+      result << (block_given? ? yield(current_node.value) : current_node.value)
+      helper.call(current_node.right_child)
+    end
+
+    helper.call(root)
+    result
+  end
+
+  def pre_order
+    result = []
+
+    traverse = lambda do |current_node|
+      return if current_node.nil?
+
+      result << (block_given? ? yield(current_node.value) : current_node.value)
+      traverse.call(current_node.left_child)
+      traverse.call(current_node.right_child)
+    end
+
+    traverse.call(root)
+    result
+  end
+
+  def post_order
+    result = []
+
+    traverse = lambda do |current_node|
+      return if current_node.nil?
+
+      traverse.call(current_node.left_child)
+      traverse.call(current_node.right_child)
+      result << (block_given? ? yield(current_node.value) : current_node.value)
+    end
+
+    traverse.call(root)
+    result
+  end
+
   private
 
   def del_node(address, prev_node = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -101,8 +146,11 @@ class Tree
   end
 end
 
-array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
+array = [1, 2, 3, 4, 5, 6, 7]
 test = Tree.new(array)
 test.print_bst
-p test.level_order
-p test.rec_level_order
+
+what = test.post_order do |item|
+  "now at: #{item}"
+end
+p what

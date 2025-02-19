@@ -121,8 +121,8 @@ class Tree # rubocop:disable Metrics/ClassLength
   end
 
   def depth(value, current_node = root)
-    return 0 if current_node.value == value
     return nil if current_node.nil?
+    return 0 if current_node.value == value
 
     path = current_node.value > value ? current_node.left_child : current_node.right_child
 
@@ -169,4 +169,4 @@ test.insert(16)
 test.insert(17)
 test.insert(18)
 test.print_bst
-p test.depth(11)
+p test.depth(100)

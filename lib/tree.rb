@@ -3,7 +3,7 @@
 require_relative 'node'
 require_relative 'sort'
 # tree class
-class Tree
+class Tree # rubocop:disable Metrics/ClassLength
   attr_reader :root
 
   def initialize(array)
@@ -112,6 +112,21 @@ class Tree
     result
   end
 
+  def height
+    highest_edge = 0
+
+    count = lambda do |current_node|
+      return 0 if current_node.nil? || (current_node.left_child.nil? && current_node.right_child.nil?)
+
+      left = count.call(current_node.left_child) + 1
+      right = count.call(current_node.right_child) + 1
+
+      highest_edge = [right, left].max
+    end
+    count.call(root)
+    highest_edge
+  end
+
   private
 
   def del_node(address, prev_node = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -146,11 +161,10 @@ class Tree
   end
 end
 
-array = [1, 2, 3, 4, 5, 6, 7]
+array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15]
 test = Tree.new(array)
+test.insert(16)
+test.insert(17)
+test.insert(18)
 test.print_bst
-
-what = test.post_order do |item|
-  "now at: #{item}"
-end
-p what
+p test.height

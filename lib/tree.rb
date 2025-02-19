@@ -112,19 +112,21 @@ class Tree # rubocop:disable Metrics/ClassLength
     result
   end
 
-  def height
-    highest_edge = 0
+  def height(current_node = root)
+    return 0 if current_node.nil? || (current_node.left_child.nil? && current_node.right_child.nil?)
 
-    count = lambda do |current_node|
-      return 0 if current_node.nil? || (current_node.left_child.nil? && current_node.right_child.nil?)
+    left_height = height(current_node.left_child)
+    right_height = height(current_node.right_child)
+    [left_height, right_height].max + 1
+  end
 
-      left = count.call(current_node.left_child) + 1
-      right = count.call(current_node.right_child) + 1
+  def depth(value, current_node = root)
+    return 0 if current_node.value == value
+    return nil if current_node.nil?
 
-      highest_edge = [right, left].max
-    end
-    count.call(root)
-    highest_edge
+    path = current_node.value > value ? current_node.left_child : current_node.right_child
+
+    depth(value, path) + 1
   end
 
   private
@@ -167,4 +169,4 @@ test.insert(16)
 test.insert(17)
 test.insert(18)
 test.print_bst
-p test.height
+p test.depth(11)

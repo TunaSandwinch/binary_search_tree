@@ -126,7 +126,10 @@ class Tree # rubocop:disable Metrics/ClassLength
 
     path = current_node.value > value ? current_node.left_child : current_node.right_child
 
-    depth(value, path) + 1
+    current_depth = depth(value, path)
+    return current_depth + 1 unless current_depth.nil?
+
+    nil
   end
 
   private

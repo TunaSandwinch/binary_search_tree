@@ -132,6 +132,20 @@ class Tree # rubocop:disable Metrics/ClassLength
     nil
   end
 
+  def balance?
+    height_diff = lambda do |current_node = root|
+      return -1 if current_node.nil?
+
+      left = height_diff.call(current_node.left_child)
+      right = height_diff.call(current_node.right_child)
+
+      result = left - right
+      result.abs
+    end
+
+    height_diff.call <= 1
+  end
+
   private
 
   def del_node(address, prev_node = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -166,10 +180,10 @@ class Tree # rubocop:disable Metrics/ClassLength
   end
 end
 
-array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15]
+array = [1, 2, 3, 4]
 test = Tree.new(array)
-test.insert(16)
-test.insert(17)
-test.insert(18)
+test.insert(5)
+test.insert(6)
+test.insert(7)
 test.print_bst
-p test.depth(100)
+p test.balance?

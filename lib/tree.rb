@@ -146,6 +146,10 @@ class Tree # rubocop:disable Metrics/ClassLength
     height_diff.call <= 1
   end
 
+  def rebalance
+    @root = build_tree(in_order) unless balance?
+  end
+
   private
 
   def del_node(address, prev_node = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -179,11 +183,3 @@ class Tree # rubocop:disable Metrics/ClassLength
     Node.new(array[mid], build_tree(left), build_tree(right))
   end
 end
-
-array = [1, 2, 3, 4]
-test = Tree.new(array)
-test.insert(5)
-test.insert(6)
-test.insert(7)
-test.print_bst
-p test.balance?
